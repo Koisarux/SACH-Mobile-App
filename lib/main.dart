@@ -1,0 +1,732 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'login_screen.dart';
+import 'signup_screen.dart';
+import 'dashboard_screen.dart';
+import 'my_firs_screen.dart';
+import 'alerts_screen.dart';
+import 'profile_screen.dart';
+import 'file_fir_screen.dart';
+import 'edit_profile_screen.dart';
+import 'privacy_settings_screen.dart';
+import 'notification_settings_screen.dart';
+
+void main() {
+  runApp(const SachApp());
+}
+
+class SachApp extends StatelessWidget {
+  const SachApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'SACH',
+      theme: ThemeData(brightness: Brightness.dark, fontFamily: 'Roboto'),
+      home: const SachSplashScreen(),
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignupScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/my_firs': (context) => const MyFirsScreen(),
+        '/alerts': (context) => const AlertsScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/file_fir': (context) => const FileFirScreen(),
+        '/edit_profile': (context) => const EditProfileScreen(),
+        '/privacy_settings': (context) => const PrivacySettingsScreen(),
+        '/notification_settings': (context) =>
+            const NotificationSettingsScreen(),
+      },
+    );
+  }
+}
+
+// ─── Splash-local colors (mirror theme.dart) ────────────────────────────
+const Color kBgDeep = Color(0xFF050F08);
+const Color kBgCard = Color(0xFF0C1F10);
+const Color kCyan = Color(0xFF01763A); // Pakistan flag green
+const Color kPurple = Color(0xFFD4AF37); // Government gold
+const Color kAccentEnd = Color(0xFF4CAF50); // Muted emerald
+const Color kDivider = Color(0xFF132B18);
+const Color kTextSub = Color(0xFF6B8C6E);
+
+// ─── Animated Splash Screen ────────────────────────────────────────────────
+class SachSplashScreen extends StatefulWidget {
+  const SachSplashScreen({super.key});
+
+  @override
+  State<SachSplashScreen> createState() => _SachSplashScreenState();
+}
+
+class _SachSplashScreenState extends State<SachSplashScreen>
+    with TickerProviderStateMixin {
+  late final AnimationController _logoCtrl;
+  late final AnimationController _contentCtrl;
+  late final AnimationController _pulseCtrl;
+  late final AnimationController _orbitCtrl;
+
+  late final Animation<double> _logoScale;
+  late final Animation<double> _logoFade;
+  late final Animation<double> _contentFade;
+  late final Animation<Offset> _contentSlide;
+  late final Animation<double> _pulse;
+  late final Animation<double> _orbit;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _logoCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _contentCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _orbitCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+
+    _logoScale = CurvedAnimation(
+      parent: _logoCtrl,
+      curve: Curves.elasticOut,
+    ).drive(Tween(begin: 0.4, end: 1.0));
+    _logoFade = CurvedAnimation(
+      parent: _logoCtrl,
+      curve: Curves.easeIn,
+    ).drive(Tween(begin: 0.0, end: 1.0));
+
+    _contentFade = CurvedAnimation(
+      parent: _contentCtrl,
+      curve: Curves.easeIn,
+    ).drive(Tween(begin: 0.0, end: 1.0));
+    _contentSlide = CurvedAnimation(
+      parent: _contentCtrl,
+      curve: Curves.easeOutCubic,
+    ).drive(Tween(begin: const Offset(0, 0.12), end: Offset.zero));
+
+    _pulse = CurvedAnimation(
+      parent: _pulseCtrl,
+      curve: Curves.easeInOut,
+    ).drive(Tween(begin: 0.85, end: 1.15));
+    _orbit = _orbitCtrl.drive(Tween(begin: 0.0, end: 2 * pi));
+
+    // Stagger animations
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _logoCtrl.forward().then((_) {
+        Future.delayed(
+          const Duration(milliseconds: 200),
+          () => _contentCtrl.forward(),
+        );
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _logoCtrl.dispose();
+    _contentCtrl.dispose();
+    _pulseCtrl.dispose();
+    _orbitCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: kBgDeep,
+      body: Stack(
+        children: [
+          // ── Background particle glow ──
+          const _BackgroundGlow(),
+
+          // ── Main content ──
+          SafeArea(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 28.0,
+                      vertical: 40.0,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 16),
+
+                        // Animated Logo
+                        FadeTransition(
+                          opacity: _logoFade,
+                          child: ScaleTransition(
+                            scale: _logoScale,
+                            child: _AnimatedLogo(pulse: _pulse, orbit: _orbit),
+                          ),
+                        ),
+
+                        const SizedBox(height: 32),
+
+                        // Title + subtitle
+                        FadeTransition(
+                          opacity: _logoFade,
+                          child: Column(
+                            children: [
+                              _GradientText(
+                                'SACH',
+                                style: const TextStyle(
+                                  fontSize: 52,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 10,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Secure Authenticated Complaint Handling',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: kPurple.withOpacity(0.9),
+                                  letterSpacing: 3.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 48),
+
+                        // Auth card
+                        SlideTransition(
+                          position: _contentSlide,
+                          child: FadeTransition(
+                            opacity: _contentFade,
+                            child: const _AuthCard(),
+                          ),
+                        ),
+
+                        const SizedBox(height: 36),
+
+                        // Footer
+                        FadeTransition(
+                          opacity: _contentFade,
+                          child: _FooterBadge(),
+                        ),
+
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Background glow blobs ─────────────────────────────────────────────────
+class _BackgroundGlow extends StatelessWidget {
+  const _BackgroundGlow();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Stack(
+      children: [
+        Positioned(
+          top: -size.height * 0.15,
+          left: -size.width * 0.2,
+          child: _GlowBlob(color: kPurple, radius: 280),
+        ),
+        Positioned(
+          bottom: -size.height * 0.05,
+          right: -size.width * 0.2,
+          child: _GlowBlob(color: kCyan, radius: 240),
+        ),
+        Positioned(
+          top: size.height * 0.4,
+          left: size.width * 0.3,
+          child: _GlowBlob(color: kAccentEnd, radius: 160),
+        ),
+      ],
+    );
+  }
+}
+
+class _GlowBlob extends StatelessWidget {
+  final Color color;
+  final double radius;
+  const _GlowBlob({required this.color, required this.radius});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: radius * 2,
+      height: radius * 2,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color.withOpacity(0.18), Colors.transparent],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Animated Logo ─────────────────────────────────────────────────────────
+class _AnimatedLogo extends StatelessWidget {
+  final Animation<double> pulse;
+  final Animation<double> orbit;
+  const _AnimatedLogo({required this.pulse, required this.orbit});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([pulse, orbit]),
+      builder: (context, _) {
+        return SizedBox(
+          width: 140,
+          height: 140,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Outer orbiting ring dots
+              ...List.generate(6, (i) {
+                final angle = orbit.value + (i * pi / 3);
+                const r = 60.0;
+                final x = cos(angle) * r;
+                final y = sin(angle) * r;
+                final opacity = (0.3 + 0.7 * sin(angle)).clamp(0.15, 0.9);
+                return Transform.translate(
+                  offset: Offset(x, y),
+                  child: Container(
+                    width: i % 2 == 0 ? 6 : 4,
+                    height: i % 2 == 0 ? 6 : 4,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (i % 2 == 0 ? kCyan : kPurple).withOpacity(
+                        opacity.toDouble(),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+
+              // Pulse ring
+              Transform.scale(
+                scale: pulse.value,
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: kCyan.withOpacity(0.15),
+                      width: 1,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Core icon container
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.08),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: kCyan.withOpacity(0.25),
+                      blurRadius: 32,
+                      spreadRadius: 4,
+                    ),
+                    BoxShadow(
+                      color: kPurple.withOpacity(0.2),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [kCyan, kPurple],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds),
+                  child: const Icon(
+                    Icons.balance,
+                    size: 36,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ─── Auth Card ─────────────────────────────────────────────────────────────
+class _AuthCard extends StatelessWidget {
+  const _AuthCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: kBgCard,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: kCyan.withOpacity(0.15), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.7),
+            blurRadius: 32,
+            offset: const Offset(0, 16),
+          ),
+          BoxShadow(
+            color: kCyan.withOpacity(0.08),
+            blurRadius: 48,
+            spreadRadius: 8,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Card header
+          Text(
+            'Citizen Access Portal',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.95),
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.3,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'حکومت پاکستان — Government of Pakistan',
+            style: TextStyle(
+              color: kTextSub,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+
+          const SizedBox(height: 24),
+          _Divider(),
+          const SizedBox(height: 24),
+
+          // Register button
+          _GradientButton(
+            onPressed: () => Navigator.of(context).pushNamed('/signup'),
+            icon: Icons.fingerprint_rounded,
+            label: 'Register via NADRA',
+          ),
+
+          const SizedBox(height: 14),
+
+          // Login button
+          _OutlineButton(
+            onPressed: () => Navigator.of(context).pushNamed('/login'),
+            icon: Icons.shield_outlined,
+            label: 'Secure Login',
+          ),
+
+          const SizedBox(height: 20),
+
+          // Trust row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _TrustBadge(
+                icon: Icons.lock_rounded,
+                label: 'End-to-End Encrypted',
+              ),
+              const SizedBox(width: 4),
+              Container(width: 1, height: 12, color: kDivider),
+              const SizedBox(width: 4),
+              _TrustBadge(
+                icon: Icons.verified_rounded,
+                label: 'NADRA Verified',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: Container(height: 1, color: kDivider)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            'Choose an option',
+            style: TextStyle(color: kTextSub, fontSize: 11, letterSpacing: 0.5),
+          ),
+        ),
+        Expanded(child: Container(height: 1, color: kDivider)),
+      ],
+    );
+  }
+}
+
+class _GradientButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String label;
+  const _GradientButton({
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+  });
+
+  @override
+  State<_GradientButton> createState() => _GradientButtonState();
+}
+
+class _GradientButtonState extends State<_GradientButton> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [kCyan, kPurple],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: kPurple.withOpacity(_hovering ? 0.55 : 0.3),
+              blurRadius: _hovering ? 24 : 14,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: kCyan.withOpacity(_hovering ? 0.3 : 0.1),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: widget.onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(widget.icon, color: Colors.white, size: 22),
+              const SizedBox(width: 12),
+              Text(
+                widget.label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OutlineButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String label;
+  const _OutlineButton({
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+  });
+
+  @override
+  State<_OutlineButton> createState() => _OutlineButtonState();
+}
+
+class _OutlineButtonState extends State<_OutlineButton> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: _hovering
+              ? Colors.white.withOpacity(0.04)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: _hovering
+                ? kCyan.withOpacity(0.5)
+                : Colors.white.withOpacity(0.12),
+            width: 1.5,
+          ),
+        ),
+        child: TextButton(
+          onPressed: widget.onPressed,
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                widget.icon,
+                color: Colors.white.withOpacity(0.85),
+                size: 22,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                widget.label,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.85),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  letterSpacing: 0.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TrustBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _TrustBadge({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 12, color: kCyan.withOpacity(0.7)),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: kTextSub,
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Gradient Text ─────────────────────────────────────────────────────────
+class _GradientText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+  const _GradientText(this.text, {required this.style});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) => const LinearGradient(
+        colors: [Colors.white, Color(0xFF4DD97A), kPurple],
+        stops: [0.0, 0.5, 1.0],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ).createShader(bounds),
+      child: Text(text, style: style.copyWith(color: Colors.white)),
+    );
+  }
+}
+
+// ─── Footer Badge ──────────────────────────────────────────────────────────
+class _FooterBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: kCyan.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(50),
+        border: Border.all(color: kCyan.withOpacity(0.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: kCyan,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Secured via Hyperledger Fabric · NADRA Integration',
+            style: TextStyle(
+              color: kPurple.withOpacity(0.7),
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
