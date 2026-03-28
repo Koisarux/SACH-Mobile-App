@@ -1,37 +1,30 @@
-# 🛡️ SACH Mobile App
+# 🛡️ SACH Mobile App (Frontend UI)
 
-A **user-facing mobile application** for a decentralized FIR (First Information Report) registration system. This project enables citizens to securely log, track, and manage police reports on an immutable blockchain ledger, ensuring transparency and accountability in the justice system.
+A **frontend mobile application template** designed for a decentralized FIR (First Information Report) registration system. This project serves as the visual and interactive foundation for a citizen-facing reporting portal, focusing on clean architecture and a seamless user experience.
 
 ---
 
 ## 🤔 What Does This Project Do?
 
-Filing a police report can sometimes be a tedious and opaque process. **SACH** (which means "Truth") modernizes and secures this process by utilizing blockchain technology. 
+This repository contains the **UI/UX implementation** of the SACH application. It demonstrates how a modern, secure citizen portal should look and feel before being connected to a live backend or blockchain network. 
 
-This application serves as the frontend citizen portal that can:
-
-- 📝 **Securely File an FIR** — Log incident details directly to a tamper-proof decentralized network.
-- 📍 **Tag Incident Locations** — Use built-in interactive maps to pinpoint exactly where an incident occurred.
-- 🔍 **Track Report Status** — Monitor the real-time progress of filed FIRs from submission to resolution.
-- 🔔 **Receive Alerts** — Get updates and notifications regarding active reports and local safety alerts.
-- 👤 **Manage Citizen Profile** — Maintain personal details securely for quick report filing.
-
-By leveraging a decentralized ledger, the system ensures that **once an FIR is filed, it cannot be tampered with, altered, or unlawfully deleted**.
+Currently, the app features the complete interactive flow for:
+- 📝 **Filing an FIR** — UI forms designed to capture incident details securely.
+- 📍 **Location Tagging** — Integrated map interface using `flutter_map` for selecting incident coordinates.
+- 🔍 **Tracking Reports** — Mocked dashboard interfaces for tracking the status of filed FIRs.
+- 👤 **Profile Management** — Screens built for managing citizen identity and preferences.
 
 ---
 
-## ✨ Key Features
-
-This application isn't just a standard form-filler. It comes packed with robust features:
+## ✨ Key Frontend Features
 
 | Feature | What It Means |
 |---------|---------------|
-| **Blockchain Integration** | FIR data is anchored to a decentralized ledger for immutable record-keeping |
-| **Interactive Mapping** | Integrates OpenStreetMap data to accurately capture incident coordinates |
-| **State Management** | Efficient, reactive UI using dedicated stores for FIRS, user profiles, and alerts |
-| **Multi-Language Support** | Built-in localization architecture to serve a diverse citizen base |
-| **Cross-Platform** | A single codebase compiled for Android and iOS devices natively |
-| **Privacy Controls** | Dedicated settings to manage how user data and notifications are handled |
+| **Interactive Prototyping** | Fully navigable UI screens demonstrating the complete user journey |
+| **Map Integration** | Ready-to-use OpenStreetMap rendering using `flutter_map` and `latlong2` |
+| **State Management Setup** | Scaffolded stores (`fir_store`, `alert_store`) ready to be hooked up to an API |
+| **Cross-Platform** | A single Flutter codebase compiled natively for both iOS and Android |
+| **Responsive Design** | Adapts cleanly to different mobile screen sizes and orientations |
 
 ---
 
@@ -44,7 +37,6 @@ This application isn't just a standard form-filler. It comes packed with robust 
 | **flutter_map (^7.0.2)** | Highly customizable mapping widget for Flutter |
 | **latlong2 (^0.9.1)** | Lightweight library for calculating map coordinates and distances |
 | **Cupertino & Material Icons** | Native-looking UI components for both iOS and Android |
-| **Blockchain** | Decentralized ledger backend for immutable FIR storage |
 
 ---
 
@@ -81,8 +73,6 @@ sach-mobile-app/
         └── ...settings screens
 ```
 
-*(Note: The `lib/` structure above is conceptually organized based on your project files for better readability).*
-
 ---
 
 ## 🚀 How to Set Up (Step by Step)
@@ -97,7 +87,7 @@ Make sure you have the following installed on your machine:
 ### 1. Clone this repository
 
 ```bash
-git clone https://github.com/koisarux/sach-mobile-app.git
+git clone [https://github.com/koisarux/sach-mobile-app.git](https://github.com/koisarux/sach-mobile-app.git)
 cd sach-mobile-app
 ```
 
@@ -125,10 +115,10 @@ This will compile the app and launch it on your connected device or emulator.
 
 | Flow | Description |
 |--------|-------------|
-| **Authentication** | Secure `signup_screen` and `login_screen` for citizen identity verification. |
-| **Dashboard** | The central `dashboard_screen` providing a quick overview of active alerts and recent FIRs. |
+| **Authentication** | Secure `signup_screen` and `login_screen` UI for citizen identity verification. |
+| **Dashboard** | The central `dashboard_screen` providing a visual overview of active alerts and recent FIRs. |
 | **FIR Management** | Navigate from `file_fir_screen` to submit a report, and `my_firs_screen` to view history. |
-| **Settings** | Robust configurations via `privacy_settings_screen` and `notification_settings_screen`. |
+| **Settings** | UI configurations via `privacy_settings_screen` and `notification_settings_screen`. |
 
 ---
 
