@@ -124,4 +124,4 @@ This will compile the app and launch it on your connected device or emulator.
 
 ## 📄 License
 
-This project is currently marked as private (`publish_to: 'none'`). Please contact the repository owner for usage, contribution, or licensing details.
+MIT License — feel free to use this project for learning or as a portfolio piece.
