@@ -444,8 +444,8 @@ class _AuthCard extends StatelessWidget {
           // Register button
           _GradientButton(
             onPressed: () => Navigator.of(context).pushNamed('/signup'),
-            icon: Icons.fingerprint_rounded,
-            label: 'Register via NADRA',
+            icon: Icons.how_to_reg_rounded,
+            label: 'Register as Citizen',
           ),
 
           const SizedBox(height: 14),
@@ -466,13 +466,6 @@ class _AuthCard extends StatelessWidget {
               _TrustBadge(
                 icon: Icons.lock_rounded,
                 label: 'End-to-End Encrypted',
-              ),
-              const SizedBox(width: 4),
-              Container(width: 1, height: 12, color: kDivider),
-              const SizedBox(width: 4),
-              _TrustBadge(
-                icon: Icons.verified_rounded,
-                label: 'NADRA Verified',
               ),
             ],
           ),
@@ -717,7 +710,7 @@ class _FooterBadge extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            'Secured via Hyperledger Fabric · NADRA Integration',
+            'Secured via Hyperledger Fabric',
             style: TextStyle(
               color: kPurple.withOpacity(0.7),
               fontSize: 11,

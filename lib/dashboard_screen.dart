@@ -557,7 +557,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     Icon(Icons.verified_rounded, color: kGold, size: 14),
                     const SizedBox(width: 4),
                     Text(
-                      S.nadraVerified,
+                      S.verifiedCitizen,
                       style: TextStyle(
                         color: kGold,
                         fontSize: 12,
