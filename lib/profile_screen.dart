@@ -44,14 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: kBgCard,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: kGold,
-            size: 18,
-          ),
-          onPressed: () => Navigator.of(context).maybePop(),
-        ),
+        automaticallyImplyLeading: false,
         title: Text(
           S.profileTitle,
           style: TextStyle(
@@ -185,7 +178,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNav(context),
     );
   }
 
@@ -480,81 +472,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Icon(Icons.chevron_right_rounded, color: kTextSub, size: 20),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ── Bottom nav ────────────────────────────────────────────────────────────
-  Widget _buildBottomNav(BuildContext context) {
-    final items = [
-      (Icons.home_rounded, S.home),
-      (Icons.folder_open_rounded, S.myFirs),
-      (Icons.notifications_rounded, S.alerts),
-      (Icons.person_rounded, S.profile),
-    ];
-    const selectedTab = 3; // Profile
-    return Container(
-      decoration: BoxDecoration(
-        color: kBgCard,
-        border: Border(top: BorderSide(color: kDivider, width: 1)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Row(
-            textDirection: TextDirection.ltr,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(items.length, (i) {
-              final selected = selectedTab == i;
-              return GestureDetector(
-                onTap: () {
-                  if (i == 0)
-                    sachPushAndRemoveUntil(context, const DashboardScreen());
-                  else if (i == 1)
-                    sachPush(context, const MyFirsScreen());
-                  else if (i == 2)
-                    sachPush(context, const AlertsScreen());
-                },
-                behavior: HitTestBehavior.opaque,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? kGreen.withOpacity(0.12)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        items[i].$1,
-                        color: selected ? kGold : kTextSub,
-                        size: 24,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        items[i].$2,
-                        style: TextStyle(
-                          color: selected ? kGold : kTextSub,
-                          fontSize: 11,
-                          fontWeight: selected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
           ),
         ),
       ),
