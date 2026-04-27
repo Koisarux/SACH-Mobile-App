@@ -498,8 +498,8 @@ class FirDetailScreen extends StatelessWidget {
         _Divider(),
         _DetailRow(
           icon: Icons.verified_rounded,
-          label: 'NADRA Verified',
-          value: 'Yes — Biometric confirmed',
+          label: 'Identity Verified',
+          value: 'Yes — OTP confirmed',
           highlight: true,
         ),
       ],

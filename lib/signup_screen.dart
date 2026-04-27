@@ -306,8 +306,8 @@ class _SignupScreenState extends State<SignupScreen>
           validator: (v) {
             if (v == null || v.isEmpty) return 'Mobile number is required';
             final digits = v.replaceAll(RegExp(r'\D'), '');
-            if (digits.length < 11)
-              return 'Enter a valid Pakistani mobile number';
+            if (digits.length != 12 || !digits.startsWith('923'))
+              return 'Enter a valid 10-digit Pakistani mobile number';
             return null;
           },
         ),
@@ -349,7 +349,7 @@ class _SignupScreenState extends State<SignupScreen>
               ),
               const SizedBox(width: 10),
               Text(
-                'NADRA E-KYC Verification',
+                'Identity Verification',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.9),
                   fontSize: 15,
@@ -361,26 +361,6 @@ class _SignupScreenState extends State<SignupScreen>
           ),
           const SizedBox(height: 18),
           SachGradientButton(
-            label: 'Biometric Fingerprint Scan',
-            icon: Icons.fingerprint_rounded,
-            onPressed: () => showBiometricSheet(context),
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(child: Divider(color: kDivider, thickness: 1)),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  'or',
-                  style: TextStyle(color: kTextSub, fontSize: 12),
-                ),
-              ),
-              Expanded(child: Divider(color: kDivider, thickness: 1)),
-            ],
-          ),
-          const SizedBox(height: 14),
-          SachOutlineButton(
             label: 'Send Mobile OTP',
             icon: Icons.smartphone_rounded,
             onPressed: () => showOtpSheet(context),
@@ -471,8 +451,18 @@ class _PhoneFormatter extends TextInputFormatter {
     TextEditingValue old,
     TextEditingValue next,
   ) {
-    String text = next.text;
-    if (!text.startsWith('+92')) text = '+92';
+    // Extract only digits from the raw input
+    String digits = next.text.replaceAll(RegExp(r'\D'), '');
+    // Remove leading '92' if user typed it (we always show +92)
+    if (digits.startsWith('92')) digits = digits.substring(2);
+    // Remove leading '0' (habit: 03XX → 3XX)
+    if (digits.startsWith('0')) digits = digits.substring(1);
+    // First digit must be 3 — discard anything else
+    if (digits.isNotEmpty && digits[0] != '3') digits = '';
+    // Cap at 10 digits (excluding +92)
+    if (digits.length > 10) digits = digits.substring(0, 10);
+    // Build formatted string: +92 followed by digits
+    final text = '+92 $digits';
     return next.copyWith(
       text: text,
       selection: TextSelection.collapsed(offset: text.length),
